@@ -76,6 +76,18 @@
   .share-fixed { text-align:center; margin-top:8px; }
   footer { text-align:center; color:var(--muted); font-size:.72rem; margin-top:40px; }
 
+  /* password gate */
+  #gate { position:fixed; inset:0; background:var(--bg); z-index:100; display:flex; align-items:center; justify-content:center; padding:20px; }
+  #gate.open { display:none; }
+  .gatecard { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:30px 28px; max-width:340px; width:100%; text-align:center; box-shadow:0 10px 40px rgba(0,0,0,.08); }
+  .gatecard h2 { text-transform:none; letter-spacing:0; font-size:1.15rem; color:var(--ink); margin-bottom:4px; }
+  .gatecard p { color:var(--muted); font-size:.84rem; margin-bottom:16px; }
+  .gatecard input { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; font-size:1rem; text-align:center; margin-bottom:10px; }
+  .gatecard button { width:100%; padding:10px; border:none; border-radius:8px; background:#16202b; color:#fff; font-weight:600; font-size:.95rem; cursor:pointer; }
+  .gatecard .err { color:#b42318; font-size:.8rem; margin-top:8px; display:none; }
+  .gatecard.wrong .err { display:block; }
+  .gatecard.wrong input { border-color:#f3c1c1; }
+
   /* team modal */
   #overlay { display:none; position:fixed; inset:0; background:rgba(20,26,34,.45); z-index:50; align-items:flex-start; justify-content:center; padding:40px 14px; overflow-y:auto; }
   #overlay.show { display:flex; }
@@ -98,6 +110,15 @@
 </style>
 </head>
 <body>
+<div id="gate">
+  <div class="gatecard" id="gatecard">
+    <h2>&#9917; Snake Draft Tracker</h2>
+    <p>Lads only. Enter the password.</p>
+    <input type="password" id="pw" placeholder="Password" autocomplete="off">
+    <button onclick="tryUnlock()">Let me in</button>
+    <div class="err">Nope. Ask the group chat.</div>
+  </div>
+</div>
 <div class="wrap">
   <header>
     <h1>&#9917; World Cup 2026 &mdash; Snake Draft Tracker</h1>
@@ -145,6 +166,22 @@
 <div id="overlay"><div class="modal" id="modal"></div></div>
 
 <script>
+/* ---- password gate (casual protection only) ---- */
+const GATE_HASH = "a78d86f", GATE_KEY = "wc26_gate";
+function gateHash(s){ let x=5381; for(const c of s){ x=((x*33)^c.codePointAt(0))>>>0; } return x.toString(16); }
+function tryUnlock(){
+  const v = document.getElementById("pw").value.trim().toLowerCase();
+  if(gateHash(v) === GATE_HASH){
+    try{ localStorage.setItem(GATE_KEY, GATE_HASH); }catch(e){}
+    document.getElementById("gate").classList.add("open");
+  } else {
+    document.getElementById("gatecard").classList.add("wrong");
+    document.getElementById("pw").value = "";
+  }
+}
+try{ if(localStorage.getItem(GATE_KEY) === GATE_HASH) document.getElementById("gate").classList.add("open"); }catch(e){}
+document.getElementById("pw").addEventListener("keydown", e => { if(e.key==="Enter") tryUnlock(); });
+
 /* ================= DATA — edit this block to update results ================= */
 const LAST_UPDATED = "Wednesday 8 July 2026, 7:00am AEST";
 const SBS_URL = "https://www.sbs.com.au/ondemand/fifa-world-cup-2026";
