@@ -146,6 +146,7 @@
   <section>
     <h2>Leaderboard &mdash; teams still alive</h2>
     <div class="board" id="board"></div>
+    <p id="outright" style="text-align:center;color:var(--muted);font-size:.8rem;max-width:760px;margin:14px auto 0;"></p>
   </section>
 
   <section>
@@ -183,7 +184,7 @@ try{ if(localStorage.getItem(GATE_KEY) === GATE_HASH) document.getElementById("g
 document.getElementById("pw").addEventListener("keydown", e => { if(e.key==="Enter") tryUnlock(); });
 
 /* ================= DATA — edit this block to update results ================= */
-const LAST_UPDATED = "Wednesday 8 July 2026, 7:00am AEST";
+const LAST_UPDATED = "Wednesday 8 July 2026, 8:45am AEST";
 const SBS_URL = "https://www.sbs.com.au/ondemand/fifa-world-cup-2026";
 
 const OWNERS = {
@@ -202,29 +203,79 @@ const DRAFT = {
   "Argentina":"saran", "Brazil":"saran", "USA":"saran", "Mexico":"saran"
 };
 
-// Group-stage games per drafted team, scores from the team's perspective
+// Group-stage games per drafted team, scores from the team's perspective.
+// Alive teams also carry: outright (title odds), players (key men), lineup (projected XI / team news).
 const TEAM_INFO = {
-  "Spain":         { group:"H", scorer:null, games:[["Cape Verde","0–0"],["Saudi Arabia","4–0"],["Uruguay","1–0"]] },
-  "Norway":        { group:"I", scorer:{n:"Erling Haaland",g:7}, games:[["Iraq","4–1"],["Senegal","3–2"],["France","1–4"]] },
-  "Colombia":      { group:"K", scorer:null, games:[["Uzbekistan","3–1"],["DR Congo","1–0"],["Portugal","0–0"]] },
+  "Spain": { group:"H", scorer:null, outright:"$4.60", games:[["Cape Verde","0–0"],["Saudi Arabia","4–0"],["Uruguay","1–0"]],
+    players:[
+      {n:"Lamine Yamal", note:"Central to everything Spain create"},
+      {n:"Pedri", note:"Controls the tempo in midfield"},
+      {n:"Mikel Merino", note:"Stoppage-time winner that sank Portugal"},
+      {n:"Álex Baena", note:"Expected to keep his spot on the left wing"}],
+    lineup:"De la Fuente has a full squad — no injuries or suspensions. Unchanged XI expected, Baena retained on the left. Five clean sheets in five games: 9 scored, 0 conceded, a record no one else can match." },
+  "Norway": { group:"I", scorer:{n:"Erling Haaland",g:7}, outright:"$17", games:[["Iraq","4–1"],["Senegal","3–2"],["France","1–4"]],
+    players:[
+      {n:"Erling Haaland", note:"Tournament top-scorer race: 7 goals, scored in every game. $2.20 anytime v England"},
+      {n:"Martin Ødegaard", note:"Pulls the strings behind Haaland"},
+      {n:"Ørjan Nyland", note:"Keeps his place in goal"}],
+    lineup:"Nyland in goal, Ødegaard as playmaker, Haaland carrying the scoring. Beat Brazil 2–1 and Côte d'Ivoire 2–1, but shipped four to France in the groups — England will test that defence." },
+  "Colombia": { group:"K", scorer:null, outright:"$28", games:[["Uzbekistan","3–1"],["DR Congo","1–0"],["Portugal","0–0"]],
+    players:[
+      {n:"Luis Díaz", note:"Chief attacking threat"},
+      {n:"Jáminton Campaz", note:"Spurned a 1-v-1 in extra time v Switzerland"}],
+    lineup:"Haven't conceded in their last three World Cup matches. Currently locked at 0–0 with Switzerland deep into extra time." },
   "Côte d'Ivoire": { group:"E", scorer:null, games:[["Ecuador","1–0"],["Germany","1–2"],["Curaçao","2–0"]] },
-  "France":        { group:"I", scorer:{n:"Kylian Mbappé",g:7}, games:[["Senegal","3–1"],["Iraq","3–0"],["Norway","4–1"]] },
-  "Belgium":       { group:"G", scorer:null, games:[["Egypt","1–1"],["Iran","0–0"],["New Zealand","5–1"]] },
-  "Japan":         { group:"F", scorer:null, games:[["Netherlands","2–2"],["Tunisia","4–0"],["Sweden","1–1"]] },
-  "South Korea":   { group:"A", scorer:null, games:[["Czechia","2–1"],["Mexico","0–1"],["South Africa","0–1"]] },
-  "England":       { group:"L", scorer:{n:"Harry Kane",g:6}, games:[["Croatia","4–2"],["Ghana","0–0"],["Panama","2–0"]] },
-  "Germany":       { group:"E", scorer:null, games:[["Curaçao","7–1"],["Côte d'Ivoire","2–1"],["Ecuador","1–2"]] },
-  "Türkiye":       { group:"D", scorer:null, games:[["Australia","0–2"],["Paraguay","0–1"],["USA","3–2"]] },
-  "Croatia":       { group:"L", scorer:null, games:[["England","2–4"],["Panama","1–0"],["Ghana","2–1"]] },
-  "Portugal":      { group:"K", scorer:null, games:[["DR Congo","1–1"],["Uzbekistan","5–0"],["Colombia","0–0"]] },
-  "Netherlands":   { group:"F", scorer:null, games:[["Japan","2–2"],["Sweden","5–1"],["Tunisia","3–1"]] },
-  "Morocco":       { group:"C", scorer:null, games:[["Brazil","1–1"],["Scotland","1–0"],["Haiti","4–2"]] },
-  "Switzerland":   { group:"B", scorer:null, games:[["Qatar","1–1"],["Bosnia & Herz.","4–1"],["Canada","2–1"]] },
-  "Argentina":     { group:"J", scorer:{n:"Lionel Messi",g:8}, games:[["Algeria","3–0"],["Austria","2–0"],["Jordan","3–1"]] },
-  "Brazil":        { group:"C", scorer:null, games:[["Morocco","1–1"],["Haiti","3–0"],["Scotland","3–0"]] },
-  "USA":           { group:"D", scorer:null, games:[["Paraguay","4–1"],["Australia","2–0"],["Türkiye","2–3"]] },
-  "Mexico":        { group:"A", scorer:null, games:[["South Africa","2–0"],["South Korea","1–0"],["Czechia","3–0"]] }
+  "France": { group:"I", scorer:{n:"Kylian Mbappé",g:7}, outright:"$2.75 fav", games:[["Senegal","3–1"],["Iraq","3–0"],["Norway","4–1"]],
+    players:[
+      {n:"Kylian Mbappé", note:"Captain, 7 goals — leads the Golden Boot race on the tiebreak"},
+      {n:"Ousmane Dembélé", note:"Ballon d'Or winner, starts right of the front four"},
+      {n:"Michael Olise", note:"Inspired the win over Senegal"},
+      {n:"Marcus Thuram", note:"Back in training after a calf problem — bench likely"}],
+    lineup:"Deschamps' projected XI: Maignan; Koundé, Upamecano, Saliba, Digne; Koné, Rabiot; Dembélé, Olise, Barcola; Mbappé. Manu Koné ready to deputise with Tchouaméni's return uncertain." },
+  "Belgium": { group:"G", scorer:null, outright:"$34", games:[["Egypt","1–1"],["Iran","0–0"],["New Zealand","5–1"]],
+    players:[
+      {n:"Jérémy Doku", note:"Shock omission v USA — the reshuffle produced their best display"},
+      {n:"Kevin De Bruyne", note:"Also benched v USA; selection call looms for Spain"},
+      {n:"Amadou Onana", note:"Knee injury v USA — major doubt for the quarter-final"}],
+    lineup:"Slow start to the tournament, but the 4–1 dismantling of the USA was their best performance — free-flowing football without De Bruyne and Doku from the start. Onana's knee is the big worry against Spain." },
+  "Japan": { group:"F", scorer:null, games:[["Netherlands","2–2"],["Tunisia","4–0"],["Sweden","1–1"]] },
+  "South Korea": { group:"A", scorer:null, games:[["Czechia","2–1"],["Mexico","0–1"],["South Africa","0–1"]] },
+  "England": { group:"L", scorer:{n:"Harry Kane",g:6}, outright:"$6.50", games:[["Croatia","4–2"],["Ghana","0–0"],["Panama","2–0"]],
+    players:[
+      {n:"Harry Kane", note:"6 goals from 4.19 xG, 10 shots on target. Evens anytime v Norway"},
+      {n:"Jude Bellingham", note:"Brace in the 3–2 win over Mexico at the Azteca"},
+      {n:"Bukayo Saka", note:"Starts right of the front four"},
+      {n:"Jarell Quansah", note:"Suspended for the quarter-final — Reece James comes in"}],
+    lineup:"Tuchel's 4-2-3-1: Reece James in at right-back for the suspended Quansah; Saka, Bellingham and Gordon behind Kane. Squawka's model makes England 65% to get past Norway — deeper squad, calmer defence." },
+  "Germany": { group:"E", scorer:null, games:[["Curaçao","7–1"],["Côte d'Ivoire","2–1"],["Ecuador","1–2"]] },
+  "Türkiye": { group:"D", scorer:null, games:[["Australia","0–2"],["Paraguay","0–1"],["USA","3–2"]] },
+  "Croatia": { group:"L", scorer:null, games:[["England","2–4"],["Panama","1–0"],["Ghana","2–1"]] },
+  "Portugal": { group:"K", scorer:null, games:[["DR Congo","1–1"],["Uzbekistan","5–0"],["Colombia","0–0"]] },
+  "Netherlands": { group:"F", scorer:null, games:[["Japan","2–2"],["Sweden","5–1"],["Tunisia","3–1"]] },
+  "Morocco": { group:"C", scorer:null, outright:"$31", games:[["Brazil","1–1"],["Scotland","1–0"],["Haiti","4–2"]],
+    players:[
+      {n:"Azzedine Ounahi", note:"Two goals from the No.10 role v Canada"},
+      {n:"Achraf Hakimi", note:"World-class at right-back"},
+      {n:"Brahim Díaz", note:"Flanks Ounahi in the front line"},
+      {n:"Yassine Bounou", note:"The shootout hero of 2022 keeps goal"}],
+    lineup:"Projected XI: Bounou; Hakimi, Diop, Riad, Mazraoui; Ounahi at 10 flanked by Brahim Díaz and El Khannouss; Rahimi leads the line with Saibari an injury doubt. First African side to reach back-to-back WC quarters." },
+  "Switzerland": { group:"B", scorer:null, outright:"$76", games:[["Qatar","1–1"],["Bosnia & Herz.","4–1"],["Canada","2–1"]],
+    players:[
+      {n:"Granit Xhaka", note:"Captain and anchor — one loose ball nearly proved costly v Colombia"}],
+    lineup:"In the round of 16 for a fourth straight World Cup, chasing a first quarter-final since 1954. Locked at 0–0 with Colombia deep into extra time." },
+  "Argentina": { group:"J", scorer:{n:"Lionel Messi",g:8}, outright:"$4.30", games:[["Algeria","3–0"],["Austria","2–0"],["Jordan","3–1"]],
+    players:[
+      {n:"Lionel Messi", note:"8 goals — leads the Golden Boot. 83rd-minute equaliser v Egypt"},
+      {n:"Enzo Fernández", note:"Stoppage-time winner capped the comeback v Egypt"},
+      {n:"Julián Álvarez", note:"Leads the line for the holders"}],
+    lineup:"Trailed Egypt 2–0 in the 78th, won 3–2 — three goals in 13 minutes. Scaloni keeps faith with the Messi–Álvarez–Enzo–Mac Allister core. Awaiting Switzerland or Colombia in the quarters." },
+  "Brazil": { group:"C", scorer:null, games:[["Morocco","1–1"],["Haiti","3–0"],["Scotland","3–0"]] },
+  "USA": { group:"D", scorer:null, games:[["Paraguay","4–1"],["Australia","2–0"],["Türkiye","2–3"]] },
+  "Mexico": { group:"A", scorer:null, games:[["South Africa","2–0"],["South Korea","1–0"],["Czechia","3–0"]] }
 };
+
+// Outright title odds (indicative, 7–8 Jul AEST — France favourites)
+const OUTRIGHT_NOTE = "Indicative outright odds as at 8 Jul. France $2.75 favourites, then Argentina $4.30, Spain $4.60, England $6.50, Norway $17, Colombia $28, Morocco $31, Belgium $34, Switzerland $76.";
 
 const GROUP_STAGE_EXITS = [
   { team:"Türkiye",     when:"Group stage", note:"Out of Group D despite beating the USA 3–2 in their last game" },
@@ -261,10 +312,10 @@ const R16 = [
   { d:"&#128308; LIVE — Wed 8 Jul, 6am AEST", h:"Switzerland", a:"Colombia", s:null, w:null, live:true }
 ];
 const QF = [
-  { d:"Fri 10 Jul, 6am AEST",  h:"Morocco", a:"France",    s:null, w:null },
-  { d:"Sat 11 Jul, 5am AEST",  h:"Spain",   a:"Belgium",   s:null, w:null },
-  { d:"Sun 12 Jul, 7am AEST",  h:"Norway",  a:"England",   s:null, w:null },
-  { d:"Sun 12 Jul, 11am AEST", h:"Argentina", a:null,      s:null, w:null }
+  { d:"Fri 10 Jul, 6am AEST",  h:"Morocco", a:"France",    s:null, w:null, odds:"To advance: France $1.24 · Morocco $4.10" },
+  { d:"Sat 11 Jul, 5am AEST",  h:"Spain",   a:"Belgium",   s:null, w:null, odds:"To advance: Spain $1.27 · Belgium $3.80 (90 min: $1.59 / $3.90 / $6.00)" },
+  { d:"Sun 12 Jul, 7am AEST",  h:"Norway",  a:"England",   s:null, w:null, odds:"To advance: England $1.44 · Norway $4.00 · Haaland $2.20 / Kane $2.00 anytime" },
+  { d:"Sun 12 Jul, 11am AEST", h:"Argentina", a:null,      s:null, w:null, odds:"Odds up once Argentina's opponent is known" }
 ];
 const SF = [
   { d:"Wed 15 Jul AEST", h:null, a:null, s:null, w:null },
@@ -319,7 +370,8 @@ function teamSpan(t, extra){
     const name = t => t ? (ownerOf(t) ? `<b class="clickable" data-team="${t}">${t}</b> <small style="color:var(--muted)">(${ownerOf(t).name})</small>` : `<b>${t}</b>`) : "<i>TBD</i>";
     items.push(`<div class="item">
       <span class="when">${r.title}</span>
-      <span style="flex:1">${name(m.h)} v ${name(m.a)} ${m.live? '<span class="livechip">LIVE</span>':''} — ${m.d.replace(/&#128308; LIVE — /,"")}</span>
+      <span style="flex:1">${name(m.h)} v ${name(m.a)} ${m.live? '<span class="livechip">LIVE</span>':''} — ${m.d.replace(/&#128308; LIVE — /,"")}
+        ${m.odds? `<br><small style="color:var(--muted)">&#127919; ${m.odds}</small>`:""}</span>
       <a class="watchlink" href="${SBS_URL}" target="_blank" rel="noopener">&#9654; SBS On Demand</a></div>`);
   }));
   up.innerHTML = items.join("") || '<div class="item">No fixtures pending.</div>';
@@ -364,7 +416,9 @@ function teamSpan(t, extra){
         const sc = m.s ? m.s.split("–")[side==="h"?0:1] : "";
         return `<div class="row ${win} ${t?'':'tbd'}">${teamSpan(t)}<span class="score">${sc}</span></div>`;
       };
-      el.innerHTML = `<div class="mdate">${m.d||""}</div>` + row(m.h,"h") + row(m.a,"a") + (m.pens? `<div class="pens">${m.pens}</div>`:"");
+      el.innerHTML = `<div class="mdate">${m.d||""}</div>` + row(m.h,"h") + row(m.a,"a")
+        + (m.pens? `<div class="pens">${m.pens}</div>`:"")
+        + (m.odds && !m.w? `<div class="pens">&#127919; ${m.odds}</div>`:"");
       col.appendChild(el);
     });
     br.appendChild(col);
@@ -411,6 +465,8 @@ function showTeam(t){
     return { rnd:"Group "+(info.group||""), opp, sc, res: gf>ga?"W":(gf<ga?"L":"D") };
   });
   const ko = knockoutGames(t);
+  let nextOdds = null;
+  ROUNDS.forEach(r => r.ms.forEach(m => { if(!nextOdds && m.w===null && (m.h===t||m.a===t) && m.odds) nextOdds = m.odds; }));
   const all = groupGames.concat(ko);
   let w=0,d=0,l=0,gf=0,ga=0,p=0;
   all.forEach(g => {
@@ -432,6 +488,11 @@ function showTeam(t){
       <div class="statbox"><b>${ga}</b><span>Against</span></div>
     </div>
     ${info?.scorer ? `<div class="scorerbox">&#9917; Leading scorer: <b>${info.scorer.n}</b> — ${info.scorer.g} goals this tournament</div>` : ""}
+    ${info?.outright && st.alive ? `<div class="scorerbox">&#127942; To win the World Cup: <b>${info.outright}</b></div>` : ""}
+    ${nextOdds ? `<div class="scorerbox">&#127919; Next match — ${nextOdds}</div>` : ""}
+    ${info?.players ? `<div style="margin-bottom:12px"><b style="font-size:.85rem">Key players</b>
+      ${info.players.map(pl=>`<div style="font-size:.82rem;padding:4px 0;border-bottom:1px dashed var(--line)"><b>${pl.n}</b> — <span style="color:var(--muted)">${pl.note}</span></div>`).join("")}</div>` : ""}
+    ${info?.lineup ? `<div style="background:var(--bg);border-radius:10px;padding:10px 12px;font-size:.82rem;margin-bottom:12px"><b>Projected lineup &amp; team news</b><br><span style="color:#3a4550">${info.lineup}</span></div>` : ""}
     <div class="mhist">
       ${all.map(g => `<div class="g"><span class="rnd">${g.rnd}</span><span style="flex:1">v ${g.opp}${g.pens? " <small style='color:var(--muted)'>("+g.pens+")</small>":""}${g.live? ' <span class="livechip">LIVE</span>':""}</span><b style="margin-right:8px">${g.sc||"—"}</b><span class="rw ${g.res||''}">${g.res||""}</span></div>`).join("")}
     </div>`;
@@ -490,6 +551,7 @@ markSeen();
 
 document.getElementById("waShare2").href = waLink(buildMessage(newOnes.length? newOnes : null));
 document.getElementById("updated").textContent = "Last updated: " + LAST_UPDATED;
+document.getElementById("outright").innerHTML = "&#127942; " + OUTRIGHT_NOTE + " <i>Odds move with results — gamble responsibly.</i>";
 </script>
 </body>
 </html>
