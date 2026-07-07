@@ -139,14 +139,14 @@
   </div>
 
   <section>
-    <h2>Coming up (Melbourne time)</h2>
-    <div class="log" id="upcoming"></div>
+    <h2>Leaderboard &mdash; who wins the draft?</h2>
+    <div class="board" id="board"></div>
+    <p id="outright" style="text-align:center;color:var(--muted);font-size:.8rem;max-width:760px;margin:14px auto 0;"></p>
   </section>
 
   <section>
-    <h2>Leaderboard &mdash; teams still alive</h2>
-    <div class="board" id="board"></div>
-    <p id="outright" style="text-align:center;color:var(--muted);font-size:.8rem;max-width:760px;margin:14px auto 0;"></p>
+    <h2>Coming up (Melbourne time)</h2>
+    <div class="log" id="upcoming"></div>
   </section>
 
   <section>
@@ -184,7 +184,7 @@ try{ if(localStorage.getItem(GATE_KEY) === GATE_HASH) document.getElementById("g
 document.getElementById("pw").addEventListener("keydown", e => { if(e.key==="Enter") tryUnlock(); });
 
 /* ================= DATA — edit this block to update results ================= */
-const LAST_UPDATED = "Wednesday 8 July 2026, 8:45am AEST";
+const LAST_UPDATED = "Wednesday 8 July 2026, 9:05am AEST";
 const SBS_URL = "https://www.sbs.com.au/ondemand/fifa-world-cup-2026";
 
 const OWNERS = {
@@ -377,6 +377,30 @@ function teamSpan(t, extra){
   up.innerHTML = items.join("") || '<div class="item">No fixtures pending.</div>';
 })();
 
+// ---- draft-winner odds (implied from each alive team's outright title odds, normalised) ----
+const DRAFT_ODDS = (function(){
+  const implied = {}; let total = 0;
+  Object.keys(OWNERS).forEach(k => implied[k] = 0);
+  Object.entries(DRAFT).forEach(([t,o]) => {
+    const st = STATUS[t], inf = TEAM_INFO[t];
+    if(st && st.alive && inf && inf.outright){
+      const v = parseFloat(inf.outright.replace(/[^0-9.]/g, ""));
+      if(v > 1){ implied[o] += 1/v; total += 1/v; }
+    }
+  });
+  const out = {};
+  Object.keys(OWNERS).forEach(k => {
+    const p = total > 0 ? implied[k]/total : 0;
+    out[k] = { pct: p, price: p > 0 ? (1/p) : null };
+  });
+  return out;
+})();
+function fmtDraftOdds(k){
+  const d = DRAFT_ODDS[k];
+  if(!d || !d.pct) return "No teams left — cooked";
+  return (d.pct*100).toFixed(0) + "% · $" + (d.price < 10 ? d.price.toFixed(2) : d.price.toFixed(0));
+}
+
 // ---- leaderboard ----
 (function(){
   const counts = {};
@@ -385,15 +409,16 @@ function teamSpan(t, extra){
     counts[o].teams.push(t);
     if(STATUS[t] && STATUS[t].alive) counts[o].alive++;
   });
-  const order = Object.keys(OWNERS).sort((a,b)=>counts[b].alive-counts[a].alive);
+  const order = Object.keys(OWNERS).sort((a,b)=>(DRAFT_ODDS[b].pct - DRAFT_ODDS[a].pct) || (counts[b].alive - counts[a].alive));
   const board = document.getElementById("board");
-  const maxAlive = Math.max(...order.map(k=>counts[k].alive));
+  const maxPct = Math.max(...order.map(k=>DRAFT_ODDS[k].pct));
   order.forEach(k => {
     const o = OWNERS[k], c = counts[k];
     const div = document.createElement("div");
     div.className = "owner"; div.style.setProperty("--oc", o.color);
-    const crown = c.alive === maxAlive && maxAlive>0 ? ' <span>&#128081;</span>' : '';
+    const crown = DRAFT_ODDS[k].pct === maxPct && maxPct>0 ? ' <span>&#128081;</span>' : '';
     div.innerHTML = `<h3><span>${o.name}${crown}</span><span class="alive">${c.alive}/4 alive</span></h3>
+      <div style="font-size:.78rem;font-weight:700;color:${DRAFT_ODDS[k].pct?'#117a3d':'#8b949e'};margin-top:4px;">&#127942; Draft win: ${fmtDraftOdds(k)}</div>
       <ul>${c.teams.sort((x,y)=>( (STATUS[y]?.alive?1:0)-(STATUS[x]?.alive?1:0) )).map(t=>{
         const st = STATUS[t];
         return `<li class="${st.alive?'':'dead'}"><span class="t clickable" data-team="${t}">${t}</span>
@@ -522,6 +547,10 @@ function buildMessage(newOnes){
   Object.keys(OWNERS).forEach(k => {
     const alive = Object.entries(DRAFT).filter(([t,o])=>o===k && STATUS[t].alive).map(([t])=>t);
     lines.push(`${OWNERS[k].name}: ${alive.length? alive.join(", ") : "—"} (${alive.length}/4)`);
+  });
+  lines.push("", "*Draft win odds:*");
+  Object.keys(OWNERS).sort((a,b)=>DRAFT_ODDS[b].pct-DRAFT_ODDS[a].pct).forEach(k => {
+    lines.push(`${OWNERS[k].name}: ${DRAFT_ODDS[k].pct ? (DRAFT_ODDS[k].pct*100).toFixed(0)+"%" : "0% 💀"}`);
   });
   return lines.join("\n");
 }
