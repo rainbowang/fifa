@@ -184,7 +184,7 @@ try{ if(localStorage.getItem(GATE_KEY) === GATE_HASH) document.getElementById("g
 document.getElementById("pw").addEventListener("keydown", e => { if(e.key==="Enter") tryUnlock(); });
 
 /* ================= DATA — edit this block to update results ================= */
-const LAST_UPDATED = "Wednesday 8 July 2026, 9:05am AEST";
+const LAST_UPDATED = "Wednesday 8 July 2026, 9:20am AEST";
 const SBS_URL = "https://www.sbs.com.au/ondemand/fifa-world-cup-2026";
 
 const OWNERS = {
@@ -219,15 +219,16 @@ const TEAM_INFO = {
       {n:"Martin Ødegaard", note:"Pulls the strings behind Haaland"},
       {n:"Ørjan Nyland", note:"Keeps his place in goal"}],
     lineup:"Nyland in goal, Ødegaard as playmaker, Haaland carrying the scoring. Beat Brazil 2–1 and Côte d'Ivoire 2–1, but shipped four to France in the groups — England will test that defence." },
-  "Colombia": { group:"K", scorer:null, outright:"$28", games:[["Uzbekistan","3–1"],["DR Congo","1–0"],["Portugal","0–0"]],
+  "Colombia": { group:"K", scorer:null, games:[["Uzbekistan","3–1"],["DR Congo","1–0"],["Portugal","0–0"]],
     players:[
-      {n:"Luis Díaz", note:"Chief attacking threat"},
-      {n:"Jáminton Campaz", note:"Spurned a 1-v-1 in extra time v Switzerland"}],
-    lineup:"Haven't conceded in their last three World Cup matches. Currently locked at 0–0 with Switzerland deep into extra time." },
+      {n:"Luis Díaz", note:"Chief attacking threat all tournament"},
+      {n:"Jáminton Campaz", note:"Spurned the golden 1-v-1 in extra time"},
+      {n:"Davinson Sánchez", note:"Hit the crossbar in the shootout"}],
+    lineup:"Cruel exit — didn't concede in open play across their last four matches, but went out 4–3 on penalties to Switzerland after Kobel saved Cucho Hernández's kick." },
   "Côte d'Ivoire": { group:"E", scorer:null, games:[["Ecuador","1–0"],["Germany","1–2"],["Curaçao","2–0"]] },
   "France": { group:"I", scorer:{n:"Kylian Mbappé",g:7}, outright:"$2.75 fav", games:[["Senegal","3–1"],["Iraq","3–0"],["Norway","4–1"]],
     players:[
-      {n:"Kylian Mbappé", note:"Captain, 7 goals — leads the Golden Boot race on the tiebreak"},
+      {n:"Kylian Mbappé", note:"Captain, 7 goals — chasing Messi in the Golden Boot race"},
       {n:"Ousmane Dembélé", note:"Ballon d'Or winner, starts right of the front four"},
       {n:"Michael Olise", note:"Inspired the win over Senegal"},
       {n:"Marcus Thuram", note:"Back in training after a calf problem — bench likely"}],
@@ -261,8 +262,10 @@ const TEAM_INFO = {
     lineup:"Projected XI: Bounou; Hakimi, Diop, Riad, Mazraoui; Ounahi at 10 flanked by Brahim Díaz and El Khannouss; Rahimi leads the line with Saibari an injury doubt. First African side to reach back-to-back WC quarters." },
   "Switzerland": { group:"B", scorer:null, outright:"$76", games:[["Qatar","1–1"],["Bosnia & Herz.","4–1"],["Canada","2–1"]],
     players:[
-      {n:"Granit Xhaka", note:"Captain and anchor — one loose ball nearly proved costly v Colombia"}],
-    lineup:"In the round of 16 for a fourth straight World Cup, chasing a first quarter-final since 1954. Locked at 0–0 with Colombia deep into extra time." },
+      {n:"Gregor Kobel", note:"Shootout hero — saved Cucho Hernández's penalty v Colombia"},
+      {n:"Rúben Vargas", note:"Buried the winning spot-kick"},
+      {n:"Granit Xhaka", note:"Captain and anchor in midfield"}],
+    lineup:"Through to a first quarter-final since 1954 after outlasting Colombia 4–3 on penalties (0–0 after 120 minutes). Now the massive job: title holders Argentina in Kansas City, Sun 11am AEST." },
   "Argentina": { group:"J", scorer:{n:"Lionel Messi",g:8}, outright:"$4.30", games:[["Algeria","3–0"],["Austria","2–0"],["Jordan","3–1"]],
     players:[
       {n:"Lionel Messi", note:"8 goals — leads the Golden Boot. 83rd-minute equaliser v Egypt"},
@@ -275,7 +278,7 @@ const TEAM_INFO = {
 };
 
 // Outright title odds (indicative, 7–8 Jul AEST — France favourites)
-const OUTRIGHT_NOTE = "Indicative outright odds as at 8 Jul. France $2.75 favourites, then Argentina $4.30, Spain $4.60, England $6.50, Norway $17, Colombia $28, Morocco $31, Belgium $34, Switzerland $76.";
+const OUTRIGHT_NOTE = "Indicative outright odds as at 8 Jul. France $2.75 favourites, then Argentina $4.30, Spain $4.60, England $6.50, Norway $17, Morocco $31, Belgium $34, Switzerland $76. Golden Boot: Messi leads on 8, Mbappé & Haaland 7, Kane 6.";
 
 const GROUP_STAGE_EXITS = [
   { team:"Türkiye",     when:"Group stage", note:"Out of Group D despite beating the USA 3–2 in their last game" },
@@ -309,13 +312,13 @@ const R16 = [
   { d:"5 Jul",  h:"Brazil",    a:"Norway",      s:"1–2", w:"a" },
   { d:"5 Jul",  h:"Mexico",    a:"England",     s:"2–3", w:"a" },
   { d:"8 Jul",  h:"Argentina", a:"Egypt",       s:"3–2", w:"h" },
-  { d:"&#128308; LIVE — Wed 8 Jul, 6am AEST", h:"Switzerland", a:"Colombia", s:null, w:null, live:true }
+  { d:"8 Jul", h:"Switzerland", a:"Colombia", s:"0–0", w:"h", pens:"Switzerland 4–3 pens" }
 ];
 const QF = [
   { d:"Fri 10 Jul, 6am AEST",  h:"Morocco", a:"France",    s:null, w:null, odds:"To advance: France $1.24 · Morocco $4.10" },
   { d:"Sat 11 Jul, 5am AEST",  h:"Spain",   a:"Belgium",   s:null, w:null, odds:"To advance: Spain $1.27 · Belgium $3.80 (90 min: $1.59 / $3.90 / $6.00)" },
   { d:"Sun 12 Jul, 7am AEST",  h:"Norway",  a:"England",   s:null, w:null, odds:"To advance: England $1.44 · Norway $4.00 · Haaland $2.20 / Kane $2.00 anytime" },
-  { d:"Sun 12 Jul, 11am AEST", h:"Argentina", a:null,      s:null, w:null, odds:"Odds up once Argentina's opponent is known" }
+  { d:"Sun 12 Jul, 11am AEST", h:"Argentina", a:"Switzerland", s:null, w:null, odds:"Argentina firm favourites — prices to come" }
 ];
 const SF = [
   { d:"Wed 15 Jul AEST", h:null, a:null, s:null, w:null },
