@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Worldcup 2026 Draft Tracker",
+  "schemaVersion": 1,
+  "description": "FIFA World Cup 2026 snake draft tracker — knockout bracket, owner leaderboard (Nando, Phil, Saran, Mike, Rosh) and elimination log. Data embedded in the DATA block of the script; updated daily by the wc26-draft-update scheduled task from web results."
+}
+</script>
 <html lang="en-AU">
 <head>
 <meta charset="UTF-8">
@@ -184,7 +191,7 @@ try{ if(localStorage.getItem(GATE_KEY) === GATE_HASH) document.getElementById("g
 document.getElementById("pw").addEventListener("keydown", e => { if(e.key==="Enter") tryUnlock(); });
 
 /* ================= DATA — edit this block to update results ================= */
-const LAST_UPDATED = "Wednesday 8 July 2026, 9:20am AEST";
+const LAST_UPDATED = "Friday 10 July 2026, 1:45pm AEST";
 const SBS_URL = "https://www.sbs.com.au/ondemand/fifa-world-cup-2026";
 
 const OWNERS = {
@@ -212,7 +219,7 @@ const TEAM_INFO = {
       {n:"Pedri", note:"Controls the tempo in midfield"},
       {n:"Mikel Merino", note:"Stoppage-time winner that sank Portugal"},
       {n:"Álex Baena", note:"Expected to keep his spot on the left wing"}],
-    lineup:"De la Fuente has a full squad — no injuries or suspensions. Unchanged XI expected, Baena retained on the left. Five clean sheets in five games: 9 scored, 0 conceded, a record no one else can match." },
+    lineup:"De la Fuente has a full squad — no injuries or suspensions. Unchanged XI expected, Baena retained on the left. Five clean sheets in five games: 9 scored, 0 conceded, a record no one else can match. Winner gets France in Dallas." },
   "Norway": { group:"I", scorer:{n:"Erling Haaland",g:7}, outright:"$17", games:[["Iraq","4–1"],["Senegal","3–2"],["France","1–4"]],
     players:[
       {n:"Erling Haaland", note:"Tournament top-scorer race: 7 goals, scored in every game. $2.20 anytime v England"},
@@ -226,22 +233,22 @@ const TEAM_INFO = {
       {n:"Davinson Sánchez", note:"Hit the crossbar in the shootout"}],
     lineup:"Cruel exit — didn't concede in open play across their last four matches, but went out 4–3 on penalties to Switzerland after Kobel saved Cucho Hernández's kick." },
   "Côte d'Ivoire": { group:"E", scorer:null, games:[["Ecuador","1–0"],["Germany","1–2"],["Curaçao","2–0"]] },
-  "France": { group:"I", scorer:{n:"Kylian Mbappé",g:7}, outright:"$2.75 fav", games:[["Senegal","3–1"],["Iraq","3–0"],["Norway","4–1"]],
+  "France": { group:"I", scorer:{n:"Kylian Mbappé",g:8}, outright:"$2.80 fav", games:[["Senegal","3–1"],["Iraq","3–0"],["Norway","4–1"]],
     players:[
-      {n:"Kylian Mbappé", note:"Captain, 7 goals — chasing Messi in the Golden Boot race"},
-      {n:"Ousmane Dembélé", note:"Ballon d'Or winner, starts right of the front four"},
-      {n:"Michael Olise", note:"Inspired the win over Senegal"},
+      {n:"Kylian Mbappé", note:"Captain — 8 goals, level with Messi in the Golden Boot race (ahead on assists). Goal and assist v Morocco after a missed first-half penalty"},
+      {n:"Ousmane Dembélé", note:"Ballon d'Or winner — sealed the Morocco win moments after Mbappé's opener"},
+      {n:"Michael Olise", note:"Keeps his spot in the front four"},
       {n:"Marcus Thuram", note:"Back in training after a calf problem — bench likely"}],
-    lineup:"Deschamps' projected XI: Maignan; Koundé, Upamecano, Saliba, Digne; Koné, Rabiot; Dembélé, Olise, Barcola; Mbappé. Manu Koné ready to deputise with Tchouaméni's return uncertain." },
-  "Belgium": { group:"G", scorer:null, outright:"$34", games:[["Egypt","1–1"],["Iran","0–0"],["New Zealand","5–1"]],
+    lineup:"Into a third straight World Cup semi-final after the 2–0 quarter-final win over Morocco in Boston. Deschamps' XI is settled: Maignan; Koundé, Upamecano, Saliba, Digne; Koné, Rabiot; Dembélé, Olise, Barcola; Mbappé. Next: Spain or Belgium in Dallas, Wed 15 Jul AEST." },
+  "Belgium": { group:"G", scorer:null, outright:"$31", games:[["Egypt","1–1"],["Iran","0–0"],["New Zealand","5–1"]],
     players:[
       {n:"Jérémy Doku", note:"Shock omission v USA — the reshuffle produced their best display"},
       {n:"Kevin De Bruyne", note:"Also benched v USA; selection call looms for Spain"},
       {n:"Amadou Onana", note:"Knee injury v USA — major doubt for the quarter-final"}],
-    lineup:"Slow start to the tournament, but the 4–1 dismantling of the USA was their best performance — free-flowing football without De Bruyne and Doku from the start. Onana's knee is the big worry against Spain." },
+    lineup:"Slow start to the tournament, but the 4–1 dismantling of the USA was their best performance — free-flowing football without De Bruyne and Doku from the start. Onana's knee is the big worry against Spain. Winner gets France in the semi." },
   "Japan": { group:"F", scorer:null, games:[["Netherlands","2–2"],["Tunisia","4–0"],["Sweden","1–1"]] },
   "South Korea": { group:"A", scorer:null, games:[["Czechia","2–1"],["Mexico","0–1"],["South Africa","0–1"]] },
-  "England": { group:"L", scorer:{n:"Harry Kane",g:6}, outright:"$6.50", games:[["Croatia","4–2"],["Ghana","0–0"],["Panama","2–0"]],
+  "England": { group:"L", scorer:{n:"Harry Kane",g:6}, outright:"$5.60", games:[["Croatia","4–2"],["Ghana","0–0"],["Panama","2–0"]],
     players:[
       {n:"Harry Kane", note:"6 goals from 4.19 xG, 10 shots on target. Evens anytime v Norway"},
       {n:"Jude Bellingham", note:"Brace in the 3–2 win over Mexico at the Azteca"},
@@ -253,32 +260,32 @@ const TEAM_INFO = {
   "Croatia": { group:"L", scorer:null, games:[["England","2–4"],["Panama","1–0"],["Ghana","2–1"]] },
   "Portugal": { group:"K", scorer:null, games:[["DR Congo","1–1"],["Uzbekistan","5–0"],["Colombia","0–0"]] },
   "Netherlands": { group:"F", scorer:null, games:[["Japan","2–2"],["Sweden","5–1"],["Tunisia","3–1"]] },
-  "Morocco": { group:"C", scorer:null, outright:"$31", games:[["Brazil","1–1"],["Scotland","1–0"],["Haiti","4–2"]],
+  "Morocco": { group:"C", scorer:null, games:[["Brazil","1–1"],["Scotland","1–0"],["Haiti","4–2"]],
     players:[
       {n:"Azzedine Ounahi", note:"Two goals from the No.10 role v Canada"},
       {n:"Achraf Hakimi", note:"World-class at right-back"},
       {n:"Brahim Díaz", note:"Flanks Ounahi in the front line"},
       {n:"Yassine Bounou", note:"The shootout hero of 2022 keeps goal"}],
-    lineup:"Projected XI: Bounou; Hakimi, Diop, Riad, Mazraoui; Ounahi at 10 flanked by Brahim Díaz and El Khannouss; Rahimi leads the line with Saibari an injury doubt. First African side to reach back-to-back WC quarters." },
-  "Switzerland": { group:"B", scorer:null, outright:"$76", games:[["Qatar","1–1"],["Bosnia & Herz.","4–1"],["Canada","2–1"]],
+    lineup:"The run ends at the quarters — beaten 2–0 by France in Boston after Mbappé (who'd earlier missed a penalty) and Dembélé struck early in the second half. Still a mighty tournament: first African side to reach back-to-back World Cup quarter-finals." },
+  "Switzerland": { group:"B", scorer:null, outright:"$34", games:[["Qatar","1–1"],["Bosnia & Herz.","4–1"],["Canada","2–1"]],
     players:[
       {n:"Gregor Kobel", note:"Shootout hero — saved Cucho Hernández's penalty v Colombia"},
       {n:"Rúben Vargas", note:"Buried the winning spot-kick"},
       {n:"Granit Xhaka", note:"Captain and anchor in midfield"}],
     lineup:"Through to a first quarter-final since 1954 after outlasting Colombia 4–3 on penalties (0–0 after 120 minutes). Now the massive job: title holders Argentina in Kansas City, Sun 11am AEST." },
-  "Argentina": { group:"J", scorer:{n:"Lionel Messi",g:8}, outright:"$4.30", games:[["Algeria","3–0"],["Austria","2–0"],["Jordan","3–1"]],
+  "Argentina": { group:"J", scorer:{n:"Lionel Messi",g:8}, outright:"$5.00", games:[["Algeria","3–0"],["Austria","2–0"],["Jordan","3–1"]],
     players:[
-      {n:"Lionel Messi", note:"8 goals — leads the Golden Boot. 83rd-minute equaliser v Egypt"},
+      {n:"Lionel Messi", note:"8 goals — level with Mbappé atop the Golden Boot race. 83rd-minute equaliser v Egypt"},
       {n:"Enzo Fernández", note:"Stoppage-time winner capped the comeback v Egypt"},
       {n:"Julián Álvarez", note:"Leads the line for the holders"}],
-    lineup:"Trailed Egypt 2–0 in the 78th, won 3–2 — three goals in 13 minutes. Scaloni keeps faith with the Messi–Álvarez–Enzo–Mac Allister core. Awaiting Switzerland or Colombia in the quarters." },
+    lineup:"Trailed Egypt 2–0 in the 78th, won 3–2 — three goals in 13 minutes. Scaloni keeps faith with the Messi–Álvarez–Enzo–Mac Allister core. Face Switzerland in Kansas City, Sun 11am AEST." },
   "Brazil": { group:"C", scorer:null, games:[["Morocco","1–1"],["Haiti","3–0"],["Scotland","3–0"]] },
   "USA": { group:"D", scorer:null, games:[["Paraguay","4–1"],["Australia","2–0"],["Türkiye","2–3"]] },
   "Mexico": { group:"A", scorer:null, games:[["South Africa","2–0"],["South Korea","1–0"],["Czechia","3–0"]] }
 };
 
-// Outright title odds (indicative, 7–8 Jul AEST — France favourites)
-const OUTRIGHT_NOTE = "Indicative outright odds as at 8 Jul. France $2.75 favourites, then Argentina $4.30, Spain $4.60, England $6.50, Norway $17, Morocco $31, Belgium $34, Switzerland $76. Golden Boot: Messi leads on 8, Mbappé & Haaland 7, Kane 6.";
+// Outright title odds (indicative, 10 Jul AEST — France favourites after beating Morocco)
+const OUTRIGHT_NOTE = "Indicative outright odds as at 10 Jul. France $2.80 favourites and first into the semis, then Spain $4.60, Argentina $5.00, England $5.60, Norway $17, Belgium $31, Switzerland $34. Golden Boot: Mbappé and Messi level on 8 (Mbappé ahead on assists), Haaland 7, Kane 6.";
 
 const GROUP_STAGE_EXITS = [
   { team:"Türkiye",     when:"Group stage", note:"Out of Group D despite beating the USA 3–2 in their last game" },
@@ -315,13 +322,13 @@ const R16 = [
   { d:"8 Jul", h:"Switzerland", a:"Colombia", s:"0–0", w:"h", pens:"Switzerland 4–3 pens" }
 ];
 const QF = [
-  { d:"Fri 10 Jul, 6am AEST",  h:"Morocco", a:"France",    s:null, w:null, odds:"To advance: France $1.24 · Morocco $4.10" },
+  { d:"10 Jul",  h:"Morocco", a:"France",    s:"0–2", w:"a" },
   { d:"Sat 11 Jul, 5am AEST",  h:"Spain",   a:"Belgium",   s:null, w:null, odds:"To advance: Spain $1.27 · Belgium $3.80 (90 min: $1.59 / $3.90 / $6.00)" },
   { d:"Sun 12 Jul, 7am AEST",  h:"Norway",  a:"England",   s:null, w:null, odds:"To advance: England $1.44 · Norway $4.00 · Haaland $2.20 / Kane $2.00 anytime" },
-  { d:"Sun 12 Jul, 11am AEST", h:"Argentina", a:"Switzerland", s:null, w:null, odds:"Argentina firm favourites — prices to come" }
+  { d:"Sun 12 Jul, 11am AEST", h:"Argentina", a:"Switzerland", s:null, w:null, odds:"Argentina firm favourites — $5.00 outright v Switzerland's $34" }
 ];
 const SF = [
-  { d:"Wed 15 Jul AEST", h:null, a:null, s:null, w:null },
+  { d:"Wed 15 Jul AEST (Dallas)", h:"France", a:null, s:null, w:null, odds:"France await Spain or Belgium" },
   { d:"Thu 16 Jul AEST", h:null, a:null, s:null, w:null }
 ];
 const FINAL = [
